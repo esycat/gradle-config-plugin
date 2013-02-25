@@ -1,6 +1,8 @@
 package com.esyfur.gradle.expandProps
 
-public class ExpandPropsTest extends Specification {
+import org.gradle.api.Project
+
+public class ExpandPropsTest {
 
     private Map props = ['a.b.c': 'Hi', 'a.b.d': 'Yo', 'f.g.h': 'Howdy']
 

@@ -2,13 +2,14 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
+apply from:   'pom.gradle'
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 description = 'Gradle plugin to expand dotted properties into nested maps.'
 group = 'com.esyfur'
-version = '0.1.13'
+version = '0.1.14'
 
 defaultTasks 'clean', 'build'
 
@@ -21,15 +22,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: "file://localhost/" + mvnLocalRepo)
-            pom.project {
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://apache.org/licenses/LICENSE-2.0'
-                        distribution 'repo'
-                    }
-                }
-            }
+            pom.project(project.getPomConfiguration())
         }
     }
 }
