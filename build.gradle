@@ -1,6 +1,7 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'maven'
+//apply plugin: 'maven-publish'
 apply plugin: 'idea'
 apply from:   'pom.gradle'
 
@@ -18,11 +19,39 @@ dependencies {
     compile gradleApi()
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/" + mvnLocalRepo)
-            pom.project(project.getPomConfiguration())
+/*
+publishing {
+	repositories {
+        maven {
+            url "file://$buildDir/repo" // change to point to your repo, e.g. http://my.org/repo
         }
     }
+    publications {
+        maven {
+            withXml {
+            	asNode().appendNode('description', 'A demonstration of maven pom customisation')
+            }
+        }
+    }
+}
+*/
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file://localhost/" + mvnLocalRepo)
+        /*
+        repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+            authentication(
+            	userName: System.properties['sonatype.username'],
+            	password: System.properties['sonatype.password']
+        	)
+        }
+        */
+        pom.project project.getPomConfiguration()
+        beforeDeployment { signing.signPom it }
+    }
+}
+
+install.repositories.mavenInstaller {
+	pom.project project.getPomConfiguration()
 }
