@@ -7,11 +7,28 @@ sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 group = 'com.esyfur'
-version = '0.1'
+version = '0.1.13'
 
 defaultTasks 'clean', 'build'
 
 dependencies {
     groovy localGroovy()
     compile gradleApi()
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/" + mvnLocalRepo)
+            pom.project {
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://apache.org/licenses/LICENSE-2.0'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }
+    }
 }
