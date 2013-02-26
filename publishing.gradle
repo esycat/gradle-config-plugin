@@ -58,10 +58,6 @@ artifacts {
     // archives sourceJar
 }
 
-//signing {
-//    sign configurations.archives
-//}
-
 uploadArchives {
     repositories.mavenDeployer {
         repository(url: "file://localhost/" + mvnLocalRepo)
