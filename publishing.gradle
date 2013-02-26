@@ -1,0 +1,83 @@
+apply plugin: 'signing'
+//apply plugin: 'maven-publish'
+
+/*
+publishing {
+	repositories {
+        maven {
+            url "file://$buildDir/repo" // change to point to your repo, e.g. http://my.org/repo
+        }
+    }
+    publications {
+        maven {
+            withXml {
+            	asNode().appendNode('description', 'A demonstration of maven pom customisation')
+            }
+        }
+    }
+}
+*/
+
+/**
+ * Create POM config and return for use by other tasks.
+ */
+def getPomConfiguration() {
+    return {
+        name project.name
+        description project.description
+        url 'https://github.com/esycat/gradle-expand-props'
+        packaging 'jar'
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://apache.org/licenses/LICENSE-2.0'
+                distribution 'repo'
+            }
+        }
+        developers {
+            developer {
+                id 'esycat'
+                name 'Eugene Janusov'
+                email 'esycat@gmail.com'
+            }
+        }
+        scm {
+            url 'https://github.com/esycat/gradle-expand-props'
+            connection 'git://github.com/esycat/gradle-expand-props.git'
+            developerConnection 'git@github.com:esycat/gradle-expand-props.git'
+        }
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'src'
+}
+
+artifacts {
+    // archives sourceJar
+}
+
+//signing {
+//    sign configurations.archives
+//}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file://localhost/" + mvnLocalRepo)
+        /*
+        repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+            authentication(
+                userName: System.properties['sonatype.username'],
+                password: System.properties['sonatype.password']
+            )
+        }
+        */
+        pom.project getPomConfiguration()
+        // beforeDeployment { signing.signPom it }
+    }
+}
+
+install.repositories.mavenInstaller {
+    pom.project getPomConfiguration()
+}
