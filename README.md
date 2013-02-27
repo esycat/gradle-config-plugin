@@ -1,4 +1,4 @@
-# Gradle Expand Properies Plugin
+# Gradle Expand Properties Plugin
 
 Gradle plugin to expand dotted properties into nested maps.
 
