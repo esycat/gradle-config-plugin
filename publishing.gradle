@@ -60,17 +60,14 @@ artifacts {
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: "file://localhost/" + mvnLocalRepo)
-        /*
         repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
             authentication(
                 userName: System.properties['sonatype.username'],
                 password: System.properties['sonatype.password']
             )
         }
-        */
         pom.project getPomConfiguration()
-        // beforeDeployment { signing.signPom it }
+        beforeDeployment { signing.signPom it }
     }
 }
 
