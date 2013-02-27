@@ -6,9 +6,9 @@ If you set a property to a build script on the command line, you may want to use
 the dotted notation (e.g. `aws.s3.bucket`) to access the values as a hierarchy
 of keys.
 
-Groovy does not auto-expand dotted property names into nested objects,
-and consequently it is not supported in Gradle as well.
-In a build script one should use `project['aws.s3.bucket']` syntax instead.
+Groovy does not auto-expand dotted property names, and consequently it is not
+supported in Gradle. In a build script one should use `project['aws.s3.bucket']`
+syntax instead.
 
 This tiny plugin for Gradle aspires to do the trick.
 
