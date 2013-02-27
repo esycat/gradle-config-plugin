@@ -31,6 +31,4 @@ class ExpandPropsPlugin implements Plugin<Project> {
 }
 
 private class ExpandPropsExtension {
-	String message
-    String greeter
 }
