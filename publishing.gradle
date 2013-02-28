@@ -26,6 +26,7 @@ def getPomConfiguration() {
         name project.name
         description project.description
         url 'https://github.com/esycat/gradle-expand-props'
+        inceptionYear '2013'
         packaging 'jar'
         licenses {
             license {
@@ -43,24 +44,30 @@ def getPomConfiguration() {
         }
         scm {
             url 'https://github.com/esycat/gradle-expand-props'
-            connection 'git://github.com/esycat/gradle-expand-props.git'
-            developerConnection 'git@github.com:esycat/gradle-expand-props.git'
+            connection 'scm:git:git@github.com:esycat/gradle-expand-props.git'
+            developerConnection 'scm:git:git@github.com:esycat/gradle-expand-props.git'
         }
     }
 }
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'src'
+    classifier = 'sources'
+}
+
+task groovydocJar(type: Jar) {
+    from groovydoc
+    classifier = 'javadoc'
 }
 
 artifacts {
-    // archives sourceJar
+    archives sourceJar, groovydocJar
 }
 
 uploadArchives {
+    def sonatypeUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
     repositories.mavenDeployer {
-        repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+        repository(url: sonatypeUrl) {
             authentication(
                 userName: System.properties['sonatype.username'],
                 password: System.properties['sonatype.password']
@@ -73,4 +80,10 @@ uploadArchives {
 
 install.repositories.mavenInstaller {
     pom.project getPomConfiguration()
+}
+
+task pom << {
+    pom {
+        project getPomConfiguration()
+    }.writeTo(mavenPomDir.toString() + '/pom.xml')
 }
