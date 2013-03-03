@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.1.20'
+        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.1.23'
     }
 }
 
