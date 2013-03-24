@@ -1,11 +1,16 @@
+.cache/
 .gradle/
 .idea/
+.sass-cache/
 .settings/
 .project
 .classpath
 .buildpath
 
-/build/*
+*.sublime-project
+*.sublime-workspace
+
+build/
 /bin/*
 /out/*
 /target/*
@@ -14,4 +19,7 @@
 *.ipr
 *.iws
 
-gradle.properties
+# OS and various viewers garbage
+Thumbs.db
+.DS_Store
+
