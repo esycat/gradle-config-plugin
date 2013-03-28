@@ -1,23 +1,24 @@
+# Caches
 .cache/
 .gradle/
-.idea/
 .sass-cache/
+
+# Build output
+build/
+out/
+target/
+
+# Eclipse, Intellij IDEA, and Sublime Text project configs
 .settings/
 .project
 .classpath
 .buildpath
-
-*.sublime-project
-*.sublime-workspace
-
-build/
-/bin/*
-/out/*
-/target/*
-
+.idea/
 *.iml
 *.ipr
 *.iws
+*.sublime-project
+*.sublime-workspace
 
 # OS and various viewers garbage
 Thumbs.db
