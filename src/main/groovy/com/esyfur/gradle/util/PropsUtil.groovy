@@ -1,5 +1,10 @@
 package com.esyfur.gradle.util
 
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.Path
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -9,6 +14,7 @@ class PropsUtilPlugin implements Plugin<Project> {
 
     void apply(final Project project) {
         project.extensions.create('propsUtil', PropsUtilExtension)
+        project.extensions.getByType(PropsUtilExtension).apply(project)
         expand(project.ext.properties, separator).each { key, val -> project.ext.set(key, val) }
     }
 
@@ -31,4 +37,30 @@ class PropsUtilPlugin implements Plugin<Project> {
 }
 
 private class PropsUtilExtension {
+
+    protected Project project
+
+    final public logMsg = 'Loaded %d properties from %s file'
+
+    void apply(final Project project) {
+        this.project = project
+    }
+
+    def load(File propertyFile) {
+        propertyFile.withReader { reader ->
+            Properties props = new Properties()
+            props.load(reader)
+            props.each { String key, String val -> project.ext.set(key, val) }
+            project.logger.info(sprintf(logMsg, props.size(), propertyFile.toString()))
+        }
+    }
+
+    def load(String filePath) {
+        this.load(project.file(filePath))
+    }
+
+    def load(Path path) {
+        this.load(path.toFile())
+    }
+
 }
