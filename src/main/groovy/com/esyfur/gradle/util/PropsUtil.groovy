@@ -1,14 +1,14 @@
-package com.esyfur.gradle.expandProps
+package com.esyfur.gradle.util
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class ExpandPropsPlugin implements Plugin<Project> {
+class PropsUtilPlugin implements Plugin<Project> {
 
     private final Character separator = '.'
 
     void apply(final Project project) {
-        project.extensions.create("expandProps", ExpandPropsExtension)
+        project.extensions.create('propsUtil', PropsUtilExtension)
         expand(project.ext.properties, separator).each { key, val -> project.ext.set(key, val) }
     }
 
@@ -30,5 +30,5 @@ class ExpandPropsPlugin implements Plugin<Project> {
 
 }
 
-private class ExpandPropsExtension {
+private class PropsUtilExtension {
 }
