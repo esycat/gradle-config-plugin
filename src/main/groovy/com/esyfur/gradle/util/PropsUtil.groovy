@@ -55,12 +55,15 @@ private class PropsUtilExtension {
         }
     }
 
-    def load(String filePath) {
-        this.load(project.file(filePath))
-    }
-
     def load(Path path) {
         this.load(path.toFile())
+    }
+
+    def load(String filePath) {
+        if (!filePath.contains('.')) filePath += '.properties'
+        def path = Paths.get(filePath)
+
+        this.load(path)
     }
 
 }
