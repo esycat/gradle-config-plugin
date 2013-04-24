@@ -1,1 +1,2 @@
-rootProject.name = "gradle-props-util"
+// rootProject.name = 'gradle-props-util'
+rootProject.name = 'gradle-expand-props'
