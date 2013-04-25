@@ -60,8 +60,15 @@ private class PropsUtilExtension {
     }
 
     def load(String filePath) {
-        if (!filePath.contains('.')) filePath += '.properties'
         def path = Paths.get(filePath)
+
+        // if the given path isn't absolute, assume it is relative to the project dir
+        if (!path.isAbsolute())
+            path = Paths.get(project.projectDir.toString(), path.toString())
+
+        // if the given file name doesn't have extension, assume it should be .properties
+        if (!path.getFileName().toString().contains('.'))
+            path = Paths.get(path.toString() + '.properties')
 
         this.load(path)
     }
