@@ -6,7 +6,7 @@ In Java applications it is a common practice to use property names in dotted not
 It also may be desirable to work with the values as nested structures.
 
 Alas, dotted names are not auto-expanded by Groovy. Thus, properties set on the command line or in `gradle.properties`
-file can be accessed in a build script only via plain string keys, e.g. `project['aws.s3.bucket']`.
+file can be accessed in a build script only via plain string keys, e.g. `project.ext['aws.s3.bucket']`.
 
 This tiny plugin for Gradle aspires to do the trick.
 

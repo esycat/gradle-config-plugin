@@ -24,7 +24,7 @@ class PropsUtilPlugin implements Plugin<Project> {
 
 private class PropsUtilExpander {
 
-    public static Character separator = '.'
+    def Character separator = '.'
 
     def expand(Map properties, ExtraPropertiesExtension ext) {
         unfold(properties, separator).each { key, val -> ext.set(key, val) }
@@ -52,7 +52,7 @@ private class PropsUtilExtension {
 
     protected Project project
 
-    final public logMsg = 'Loaded %d properties from %s file'
+    def final logMsg = 'Loaded %d properties from %s file'
 
     void apply(final Project project) {
         this.project = project
