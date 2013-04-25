@@ -27,3 +27,7 @@ signing {
     sign configurations.archives
     required { !isSnapshot && gradle.taskGraph.hasTask("uploadArchives") }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.5'
+}
