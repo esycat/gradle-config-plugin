@@ -8,18 +8,30 @@ import java.nio.file.Path
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class PropsUtilPlugin implements Plugin<Project> {
+import org.gradle.api.plugins.ExtraPropertiesExtension
 
-    private final Character separator = '.'
+class PropsUtilPlugin implements Plugin<Project> {
 
     void apply(final Project project) {
         project.extensions.create('propsUtil', PropsUtilExtension)
         project.extensions.getByType(PropsUtilExtension).apply(project)
-        expand(project.ext.properties, separator).each { key, val -> project.ext.set(key, val) }
+
+        def expander = new PropsUtilExpander()
+        expander.expand(project.ext.properties, project.ext)
     }
 
-    private static Map expand(Map props, Character separator) {
-        props.inject([:]) { result, key, val ->
+}
+
+private class PropsUtilExpander {
+
+    public static Character separator = '.'
+
+    def expand(Map properties, ExtraPropertiesExtension ext) {
+        unfold(properties, separator).each { key, val -> ext.set(key, val) }
+    }
+
+    private static Map unfold(Map properties, Character separator) {
+        properties.inject([:]) { result, key, val ->
             merge(result, key.tokenize(separator).reverse().inject(val) {
                 last, subkey -> [(subkey):last]
             })
@@ -48,10 +60,13 @@ private class PropsUtilExtension {
 
     def load(File propertyFile) {
         propertyFile.withReader { reader ->
-            Properties props = new Properties()
-            props.load(reader)
-            props.each { String key, String val -> project.ext.set(key, val) }
-            project.logger.info(sprintf(logMsg, props.size(), propertyFile.toString()))
+            def properties = new Properties()
+            properties.load(reader)
+
+            def expander = new PropsUtilExpander()
+            expander.expand(properties, project.ext)
+
+            project.logger.info(sprintf(logMsg, properties.size(), propertyFile.toString()))
         }
     }
 
