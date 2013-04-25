@@ -25,7 +25,7 @@ def getPomConfiguration() {
     return {
         name project.name
         description project.description
-        url 'https://github.com/esycat/gradle-expand-props'
+        url 'https://github.com/esycat/gradle-props-util'
         inceptionYear '2013'
         packaging 'jar'
         licenses {
@@ -42,10 +42,13 @@ def getPomConfiguration() {
                 email 'esycat@gmail.com'
             }
         }
+        organization {
+            name 'Persic Entertainment'
+        }
         scm {
-            url 'https://github.com/esycat/gradle-expand-props'
-            connection 'scm:git:git@github.com:esycat/gradle-expand-props.git'
-            developerConnection 'scm:git:git@github.com:esycat/gradle-expand-props.git'
+            url 'https://github.com/esycat/gradle-props-util'
+            connection 'scm:git:git@github.com:esycat/gradle-props-util.git'
+            developerConnection 'scm:git:git@github.com:esycat/gradle-props-util.git'
         }
     }
 }
