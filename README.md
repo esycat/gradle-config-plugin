@@ -2,16 +2,13 @@
 
 Gradle plugin to expand dotted properties into nested maps.
 
-If you set a property to a build script on the command line, you may want to use
-the dotted notation (e.g. `aws.s3.bucket`) to access the values as a hierarchy
-of keys.
+In Java applications it is a common practice to use property names in dotted notation, e.g. `aws.s3.bucket`.
+It also may be desirable to work with the values as nested structures.
 
-Groovy does not auto-expand dotted property names, and consequently it is not
-supported in Gradle. In a build script one should use `project['aws.s3.bucket']`
-syntax instead.
+Alas, dotted names are not auto-expanded by Groovy. Thus, properties set on the command line or in `gradle.properties`
+file can be accessed in a build script only via plain string keys, e.g. `project['aws.s3.bucket']`.
 
 This tiny plugin for Gradle aspires to do the trick.
-
 
 ## Quick Start
 
@@ -21,11 +18,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.1.23'
+        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.2.3'
     }
 }
 
-apply plugin: 'expandProps'
+apply plugin: 'propsUtil'
 ```
 
 
