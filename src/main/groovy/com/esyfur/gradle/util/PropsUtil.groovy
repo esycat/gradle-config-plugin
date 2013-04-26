@@ -17,7 +17,7 @@ class PropsUtilPlugin implements Plugin<Project> {
         project.extensions.getByType(PropsUtilExtension).apply(project)
 
         def expander = new PropsUtilExpander()
-        expander.expand(project.ext.properties, project.ext)
+        expander.apply(project.ext.properties, project.ext)
     }
 
 }
@@ -26,19 +26,25 @@ private class PropsUtilExpander {
 
     def Character separator = '.'
 
-    def expand(Map properties, ExtraPropertiesExtension ext) {
-        unfold(properties, separator).each { key, val -> ext.set(key, val) }
-    }
-
-    private static Map unfold(Map properties, Character separator) {
-        properties.inject([:]) { result, key, val ->
-            merge(result, key.tokenize(separator).reverse().inject(val) {
-                last, subkey -> [(subkey):last]
-            })
+    def apply(Map properties, ExtraPropertiesExtension ext) {
+        explode(ext.properties, properties).each {
+            key, val -> ext.set(key, val)
         }
     }
 
-    private static Map merge(Map first, Map second) {
+    private Map explode(Map target, Map properties) {
+        properties.inject(target) {
+            result, key, val -> merge(result, unfold(key, val))
+        }
+    }
+
+    private Map unfold(String key, String val) {
+        key.tokenize(separator).reverse().inject(val) {
+            last, subkey -> [(subkey):last]
+        }
+    }
+
+    public static Map merge(Map first, Map second) {
         second.each { key, val ->
             if (first[key] && (val instanceof Map)) merge(first[key], val)
             else first[key] = val
@@ -64,7 +70,7 @@ private class PropsUtilExtension {
             properties.load(reader)
 
             def expander = new PropsUtilExpander()
-            expander.expand(properties, project.ext)
+            expander.apply(properties, project.ext)
 
             project.logger.info(sprintf(logMsg, properties.size(), propertyFile.toString()))
         }
