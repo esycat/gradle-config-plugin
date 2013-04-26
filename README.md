@@ -10,6 +10,7 @@ file can be accessed in a build script only via plain string keys, e.g. `project
 
 This tiny plugin for Gradle aspires to do the trick.
 
+
 ## Quick Start
 
 ```groovy
@@ -41,6 +42,22 @@ task test << {
     println 'Build Version: ' + build.version
 }
 ```
+
+
+## Loading .properties files
+
+Gradle automatically reads settings from `gradle.properties` files in project build and user home directories.
+But no concise way exists to load arbitrary properties files.
+
+This plugin adds a handy `load()` helper for that:
+```groovy
+propsUtil.load('commons')
+```
+
+The method accepts either `java.nio.file.Path`, `java.io.File` or a `String`.
+If the given path isn't absolute, it is treated as relative to `projectDir`.
+If the file name does not have extension, `.properties` is assumed.
+
 
 ## Acknowledgment
 
