@@ -9,13 +9,13 @@ apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'idea'
 
-apply from: 'publishing.gradle'
+apply from: 'project/util.gradle'
+apply from: 'project/publishing.gradle'
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 ext {
-    isSnapshot = version.endsWith("-SNAPSHOT")
 }
 
 dependencies {
