@@ -1,6 +1,6 @@
 description = 'Gradle plugin to expand dotted properties into nested maps.'
 group = 'com.esyfur'
-version = '0.2.4'
+version = '0.2.5'
 
 defaultTasks 'clean', 'build'
 
@@ -19,7 +19,7 @@ ext {
 }
 
 dependencies {
-    groovy localGroovy()
+    compile localGroovy()
     compile gradleApi()
 }
 
@@ -29,5 +29,5 @@ signing {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.5'
+    gradleVersion = '1.6'
 }
