@@ -1,5 +1,6 @@
 package com.esyfur.gradle.util
 
+import java.util.Properties
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -16,8 +17,7 @@ class PropsUtilPlugin implements Plugin<Project> {
         project.extensions.create('propsUtil', PropsUtilExtension)
         project.extensions.getByType(PropsUtilExtension).apply(project)
 
-        def expander = new PropsUtilExpander()
-        expander.apply(project.ext.properties, project.ext)
+        new PropsUtilExpander().apply(project)
     }
 
 }
@@ -25,6 +25,14 @@ class PropsUtilPlugin implements Plugin<Project> {
 private class PropsUtilExpander {
 
     def Character separator = '.'
+
+    def apply(Project project) {
+        apply(project.ext)
+    }
+
+    def apply(ExtraPropertiesExtension ext) {
+        apply(ext.properties, ext)
+    }
 
     def apply(Map properties, ExtraPropertiesExtension ext) {
         explode(ext.properties, properties).each {
