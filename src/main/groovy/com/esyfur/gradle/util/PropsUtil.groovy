@@ -28,24 +28,24 @@ private class PropsUtilExpander {
 
     def apply(Map properties, ExtraPropertiesExtension ext) {
         explode(ext.properties, properties).each {
-            key, val -> ext.set(key, val)
+            String key, val -> ext.set(key, val)
         }
     }
 
     private Map explode(Map target, Map properties) {
         properties.inject(target) {
-            result, key, val -> merge(result, unfold(key, val))
+            Map result, String key, val -> merge(result, unfold(key, val))
         }
     }
 
-    private Map unfold(String key, String val) {
+    private Map unfold(String key, val) {
         key.tokenize(separator).reverse().inject(val) {
-            last, subkey -> [(subkey):last]
+            last, String subkey -> [(subkey):last]
         }
     }
 
     public static Map merge(Map first, Map second) {
-        second.each { key, val ->
+        second.each { String key, val ->
             if (first[key] && (val instanceof Map)) merge(first[key], val)
             else first[key] = val
         }
