@@ -1,6 +1,5 @@
 package com.esyfur.gradle.util
 
-import java.util.Properties
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -9,7 +8,7 @@ import java.nio.file.Path
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.api.plugins.ExtraPropertiesExtension as PropExt
 
 class PropsUtilPlugin implements Plugin<Project> {
 
@@ -30,17 +29,33 @@ private class PropsUtilExpander {
         apply(project.ext)
     }
 
-    def apply(ExtraPropertiesExtension ext) {
-        apply(ext.properties, ext)
+    def apply(PropExt ext) {
+        apply(ext, ext.properties)
     }
 
-    def apply(Map properties, ExtraPropertiesExtension ext) {
-        explode(ext.properties, properties).each {
+    def apply(PropExt ext, Map<String, Object> properties) {
+        apply(ext, new Properties(properties))
+    }
+
+    def apply(PropExt ext, Properties properties) {
+        apply(ext, new ConfigSlurper().parse(properties))
+    }
+
+    def apply(PropExt ext, ConfigObject config) {
+        config.each {
             String key, val -> ext.set(key, val)
         }
     }
 
-    private Map explode(Map target, Map properties) {
+    /*
+    def apply(Map<String, Object> properties, PropExt ext) {
+        explode(ext.properties, properties).each {
+            String key, val -> ext.set(key, val)
+        }
+    }
+    */
+
+    private Map explode(Map<String, Object> target, Map<String, Object> properties) {
         properties.inject(target) {
             Map result, String key, val -> merge(result, unfold(key, val))
         }
@@ -52,12 +67,12 @@ private class PropsUtilExpander {
         }
     }
 
-    public static Map merge(Map first, Map second) {
-        second.each { String key, val ->
-            if (first[key] && (val instanceof Map)) merge(first[key], val)
-            else first[key] = val
+    public static Map merge(Map<String, Object> dest, Map<String, Object> src) {
+        src.each { String key, val ->
+            if (dest[key] && (val instanceof Map)) merge(dest[key], val)
+            else dest[key] = val
         }
-        first
+        dest
     }
 
 }
@@ -78,7 +93,7 @@ private class PropsUtilExtension {
             properties.load(reader)
 
             def expander = new PropsUtilExpander()
-            expander.apply(properties, project.ext)
+            expander.apply(project.ext, properties)
 
             project.logger.info(sprintf(logMsg, properties.size(), propertyFile.toString()))
         }
