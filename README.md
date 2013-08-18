@@ -1,4 +1,4 @@
-# Gradle Expand Properties Plugin
+# Gradle Property Utilities Plugin
 
 Gradle plugin to expand dotted properties into nested maps.
 
@@ -9,6 +9,8 @@ Alas, dotted names are not auto-expanded by Groovy. Thus, properties set on the 
 file can be accessed in a build script only via plain string keys, e.g. `project.ext['aws.s3.bucket']`.
 
 This tiny plugin for Gradle aspires to do the trick.
+
+The latest stable version is `0.3.1`.
 
 
 ## Quick Start
@@ -42,6 +44,8 @@ task test << {
     println 'Build Version: ' + build.version
 }
 ```
+
+It is also possible to leverage the safe navigation operator: `aws.s3?.bucket`.
 
 
 ## Loading .properties files
