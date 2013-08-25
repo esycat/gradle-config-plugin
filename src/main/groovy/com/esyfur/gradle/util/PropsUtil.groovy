@@ -33,12 +33,16 @@ private class PropsUtilExpander {
         apply(ext, ext.properties)
     }
 
-    def apply(PropExt ext, Map<String, Object> properties) {
-        apply(ext, new Properties(properties))
+    def apply(PropExt ext, Map<String, Object> map) {
+        apply(ext, new Properties(map))
     }
 
     def apply(PropExt ext, Properties properties) {
-        apply(ext, new ConfigSlurper().parse(properties))
+        def slurper = new ConfigSlurper()
+        slurper.setBinding(ext.properties)
+        def config = slurper.parse(properties)
+
+        apply(ext, config)
     }
 
     def apply(PropExt ext, ConfigObject config) {
