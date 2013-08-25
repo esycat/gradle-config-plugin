@@ -42,7 +42,11 @@ private class PropsUtilExpander {
     }
 
     def apply(PropExt ext, ConfigObject config) {
-        config.each {
+        def target = new ConfigObject()
+        target.putAll(ext.properties)
+        target.merge(config)
+
+        target.each {
             String key, val -> ext.set(key, val)
         }
     }
