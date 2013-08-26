@@ -50,7 +50,11 @@ private class PropsUtilExpander {
         target.putAll(ext.properties)
         target.merge(config)
 
-        target.each {
+        merge(ext, target)
+    }
+
+    protected def merge(PropExt ext, ConfigObject config) {
+        config.each {
             String key, val -> ext.set(key, val)
         }
     }
@@ -61,7 +65,6 @@ private class PropsUtilExpander {
             String key, val -> ext.set(key, val)
         }
     }
-    */
 
     private Map explode(Map<String, Object> target, Map<String, Object> properties) {
         properties.inject(target) {
@@ -82,6 +85,7 @@ private class PropsUtilExpander {
         }
         dest
     }
+    */
 
 }
 
@@ -95,7 +99,7 @@ private class PropsUtilExtension {
         this.project = project
     }
 
-    def load(File propertyFile) {
+    def load(final File propertyFile) {
         propertyFile.withReader { reader ->
             def properties = new Properties()
             properties.load(reader)
@@ -107,11 +111,11 @@ private class PropsUtilExtension {
         }
     }
 
-    def load(Path path) {
+    def load(final Path path) {
         this.load(path.toFile())
     }
 
-    def load(String filePath) {
+    def load(final String filePath) {
         def path = Paths.get(filePath)
 
         // if the given path isn't absolute, assume it is relative to the project dir

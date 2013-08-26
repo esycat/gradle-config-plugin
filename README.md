@@ -10,7 +10,7 @@ file can be accessed in a build script only via plain string keys, e.g. `project
 
 This tiny plugin for Gradle aspires to do the trick.
 
-The latest stable version is `0.3.1`.
+The latest stable version is `0.3.2`.
 
 
 ## Quick Start
@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.3.1'
+        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.3.2'
     }
 }
 
