@@ -10,6 +10,8 @@ file can be accessed in a build script only via plain string keys, e.g. `project
 
 This tiny plugin for Gradle aspires to do the trick.
 
+JDK 1.7 is required.
+
 The latest stable version is `0.3.2`.
 
 
@@ -45,7 +47,7 @@ task test << {
 }
 ```
 
-It is also possible to leverage the safe navigation operator: `aws.s3?.bucket`.
+It is also possible to leverage the safe navigation operator: `project.ext.aws.s3?.bucket`.
 
 
 ## Loading .properties files
