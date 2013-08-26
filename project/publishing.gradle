@@ -1,3 +1,14 @@
+import org.ajoberstar.gradle.git.tasks.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.ajoberstar', name: 'gradle-git', version: project.ext.get('plugin.git.version')
+    }
+}
+
 apply plugin: 'signing'
 //apply plugin: 'maven-publish'
 
@@ -89,4 +100,13 @@ task pom << {
     pom {
         project getPomConfiguration()
     }.writeTo(mavenPomDir.toString() + '/pom.xml')
+}
+
+task tagVersion(type: GitTag) {
+    tagName = version
+    message = "Release of v${version}."
+    // sign = true // JGit doesn't support signing yet
+    doLast {
+        println sprintf('A new version %s has been tagged.', tagName)
+    }
 }
