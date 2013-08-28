@@ -1,6 +1,6 @@
 description = 'Gradle plugin to expand dotted properties into nested maps.'
 group = 'com.esyfur'
-version = '0.3.2'
+version = '0.3.3-SNAPSHOT'
 
 defaultTasks 'clean', 'build'
 
