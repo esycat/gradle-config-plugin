@@ -7,21 +7,24 @@ import org.gradle.api.plugins.ExtraPropertiesExtension as PropExt
 
 private class PropsUtilExpander {
 
+    private Project project
+
     def Character separator = '.'
 
-    def apply(Project project) {
+    void apply(Project project) {
+        this.project = project
         apply(project.ext)
     }
 
-    def apply(PropExt ext) {
+    void apply(PropExt ext) {
         apply(ext, ext.properties)
     }
 
-    def apply(PropExt ext, Map<String, Object> map) {
+    void apply(PropExt ext, Map<String, Object> map) {
         apply(ext, new Properties(map))
     }
 
-    def apply(PropExt ext, Properties properties) {
+    void apply(PropExt ext, Properties properties) {
         def slurper = new ConfigSlurper()
         slurper.setBinding(ext.properties)
         def config = slurper.parse(properties)
@@ -29,7 +32,7 @@ private class PropsUtilExpander {
         apply(ext, config)
     }
 
-    def apply(PropExt ext, ConfigObject config) {
+    void apply(PropExt ext, ConfigObject config) {
         def target = new ConfigObject()
         target.putAll(ext.properties)
         target.merge(config)
@@ -38,8 +41,12 @@ private class PropsUtilExpander {
     }
 
     protected def merge(PropExt ext, ConfigObject config) {
-        config.each {
-            String key, val -> ext.set(key, val)
+        config.each { String key, val ->
+            // if the project has a property of the same name,
+            // but that is not an additional property, add a suffix to the name
+            if (project && project.hasProperty(key) && !ext.has(key)) key += 'Prop'
+
+            ext.set(key, val)
         }
     }
 
