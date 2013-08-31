@@ -12,19 +12,18 @@ buildscript {
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+artifacts {
+    archives sourceJar, groovydocJar
+}
+
 signing {
     sign configurations.archives
     required { !isSnapshot && gradle.taskGraph.hasTask("uploadArchives") }
 }
 
-artifacts {
-    archives sourceJar, groovydocJar
-}
-
 uploadArchives {
-    def sonatypeUrl = project.ext.get('sonatype.url')
     repositories.mavenDeployer {
-        repository(url: sonatypeUrl) {
+        repository(url: project.ext.get('sonatype.url')) {
             authentication(
                 userName: System.properties['sonatype.username'],
                 password: System.properties['sonatype.password']
