@@ -1,5 +1,7 @@
 package com.esyfur.gradle.util
 
+import java.nio.file.Path
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -9,22 +11,22 @@ private class PropsUtilExpander {
 
     private Project project
 
-    def Character separator = '.'
+    // def Character separator = '.'
 
-    void apply(Project project) {
+    ConfigObject apply(Project project) {
         this.project = project
         apply(project.ext)
     }
 
-    void apply(PropExt ext) {
+    ConfigObject apply(PropExt ext) {
         apply(ext, ext.properties)
     }
 
-    void apply(PropExt ext, Map<String, Object> map) {
-        apply(ext, new Properties(map))
+    ConfigObject apply(PropExt ext, Map<String, Object> properties) {
+        apply(ext, new Properties(properties))
     }
 
-    void apply(PropExt ext, Properties properties) {
+    ConfigObject apply(PropExt ext, Properties properties) {
         def slurper = new ConfigSlurper()
         slurper.setBinding(ext.properties)
         def config = slurper.parse(properties)
@@ -32,12 +34,22 @@ private class PropsUtilExpander {
         apply(ext, config)
     }
 
-    void apply(PropExt ext, ConfigObject config) {
+    ConfigObject apply(PropExt ext, Path configFile) {
+        def slurper = new ConfigSlurper()
+        slurper.setBinding(ext.properties)
+        def config = slurper.parse(configFile.toUri())
+
+        apply(ext, config)
+    }
+
+    ConfigObject apply(PropExt ext, ConfigObject config) {
         def target = new ConfigObject()
         target.putAll(ext.properties)
-        target.merge(config)
+        config.merge(target)
 
         merge(ext, target)
+
+        config
     }
 
     protected def merge(PropExt ext, ConfigObject config) {
