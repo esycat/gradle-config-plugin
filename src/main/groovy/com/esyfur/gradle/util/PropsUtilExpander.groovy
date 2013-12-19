@@ -47,8 +47,7 @@ private class PropsUtilExpander {
         catch (ex) {
             project.logger.error('Unable to merge config values.')
             project.logger.debug('Config object: ' + config)
-            println config
-            System.exit(-1)
+            throw ex
         }
 
         merge(project, target)
