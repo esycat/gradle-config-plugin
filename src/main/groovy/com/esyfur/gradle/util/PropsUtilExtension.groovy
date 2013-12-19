@@ -31,7 +31,7 @@ private class PropsUtilExtension {
         }
 
         // Acquiring a reader and load the .properties file.
-        def reader = Files.newBufferedReader(configFile, Charset.fromName("UTF-8"))
+        def reader = Files.newBufferedReader(configFile, Charset.forName("UTF-8"))
         def config = new Properties()
         config.load(reader)
 
