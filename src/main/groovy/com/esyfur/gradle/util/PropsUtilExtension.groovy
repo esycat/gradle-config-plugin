@@ -2,8 +2,10 @@ package com.esyfur.gradle.util
 
 import org.gradle.api.Project
 
+import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.Path
+import java.nio.charset.Charset
 
 private class PropsUtilExtension {
 
@@ -31,9 +33,8 @@ private class PropsUtilExtension {
         def expander = new PropsUtilExpander(project)
         def config = new Properties()
 
-        configFile.toFile().withReader { reader ->
-            config.load(reader)
-        }
+        def reader = Files.newBufferedReader(configFile, Charset.fromName("UTF-8"))
+        config.load(reader)
 
         expander.apply(config)
 
