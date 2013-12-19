@@ -15,7 +15,12 @@ private class PropsUtilExpander {
 
     def PropsUtilExpander(final Project project) {
         this.project = project
-        apply(project.ext.properties)
+
+    }
+
+    public static apply(final Project project) {
+        def expander = new PropsUtilExpander(project)
+        expander.apply(project.ext.properties)
     }
 
     void apply(Map<String, Object> properties) {

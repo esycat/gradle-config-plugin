@@ -9,7 +9,7 @@ class PropsUtilPlugin implements Plugin<Project> {
         project.extensions.create(PropsUtilExtension.NAME, PropsUtilExtension)
         project.extensions.getByType(PropsUtilExtension).apply(project)
 
-        new PropsUtilExpander(project)
+        PropsUtilExpander.apply(project)
     }
 
 }

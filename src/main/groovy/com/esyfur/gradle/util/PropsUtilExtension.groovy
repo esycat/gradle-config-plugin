@@ -30,12 +30,13 @@ private class PropsUtilExtension {
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
-        def expander = new PropsUtilExpander(project)
-        def config = new Properties()
-
+        // Acquiring a reader and load the .properties file.
         def reader = Files.newBufferedReader(configFile, Charset.fromName("UTF-8"))
+        def config = new Properties()
         config.load(reader)
 
+        // Applying the config to the project.
+        def expander = new PropsUtilExpander(project)
         expander.apply(config)
 
         project.logger.info(sprintf(logMsg, config.size(), configFile.toString()))
