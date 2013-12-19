@@ -7,11 +7,11 @@ import java.nio.file.Path
 
 private class PropsUtilExtension {
 
-    public static final String NAME = 'propsUtil';
+    public final static String NAME = 'propsUtil';
+
+    private final static logMsg = 'Loaded %d properties from %s file'
 
     protected Project project
-
-    def final logMsg = 'Loaded %d properties from %s file'
 
     void apply(final Project project) {
         this.project = project
@@ -28,9 +28,17 @@ private class PropsUtilExtension {
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
-        def expander = new PropsUtilExpander()
-        def config = expander.apply(project.ext, configFile)
+        def expander = new PropsUtilExpander(project)
+        def config = new Properties()
+
+        configFile.toFile().withReader { reader ->
+            config.load(reader)
+        }
+
+        expander.apply(config)
+
         project.logger.info(sprintf(logMsg, config.size(), configFile.toString()))
+        project.logger.debug('Loaded properties: ' + config)
     }
 
     def load(final File configFile) {

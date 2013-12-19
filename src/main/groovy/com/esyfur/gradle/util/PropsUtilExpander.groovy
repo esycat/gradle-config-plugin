@@ -13,53 +13,47 @@ private class PropsUtilExpander {
 
     // def Character separator = '.'
 
-    ConfigObject apply(Project project) {
+    def PropsUtilExpander(final Project project) {
         this.project = project
-        apply(project.ext)
+        apply(project.ext.properties)
     }
 
-    ConfigObject apply(PropExt ext) {
-        apply(ext, ext.properties)
+    void apply(Map<String, Object> properties) {
+        apply(new Properties(properties))
     }
 
-    ConfigObject apply(PropExt ext, Map<String, Object> properties) {
-        apply(ext, new Properties(properties))
-    }
-
-    ConfigObject apply(PropExt ext, Properties properties) {
+    void apply(Properties properties) {
         def slurper = new ConfigSlurper()
-        slurper.setBinding(ext.properties)
+        slurper.setBinding(project.ext.properties)
         def config = slurper.parse(properties)
 
-        apply(ext, config)
+        apply(config)
     }
 
-    ConfigObject apply(PropExt ext, Path configFile) {
-        def slurper = new ConfigSlurper()
-        slurper.setBinding(ext.properties)
-        def config = slurper.parse(configFile.toUri())
+    void apply(ConfigObject config) {
+        def init = new ConfigObject()
+        init.putAll(project.ext.properties)
 
-        apply(ext, config)
+        def target = config.clone()
+        target.merge(init)
+
+        merge(project, target)
     }
 
-    ConfigObject apply(PropExt ext, ConfigObject config) {
-        def target = new ConfigObject()
-        target.putAll(ext.properties)
-        config.merge(target)
-
-        merge(ext, target)
-
-        config
-    }
-
-    protected def merge(PropExt ext, ConfigObject config) {
+    protected static void merge(Project project, ConfigObject config) {
         config.each { String key, val ->
             // if the project has a property of the same name,
             // but that is not an additional property, add a suffix to the name
-            if (project && project.hasProperty(key) && !ext.has(key)) key += 'Prop'
+            if (project && project.hasProperty(key) && !project.ext.has(key)) key += 'Prop'
 
-            ext.set(key, val)
+            project.ext.set(key, val)
         }
+    }
+
+    public static ConfigObject slurp(Path configFile, Map<String, Object> bindings) {
+        def slurper = new ConfigSlurper()
+        slurper.setBinding(bindings)
+        slurper.parse(configFile.toUri().toURL())
     }
 
     /*
