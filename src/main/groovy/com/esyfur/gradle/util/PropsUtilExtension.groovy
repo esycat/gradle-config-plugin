@@ -1,17 +1,16 @@
 package com.esyfur.gradle.util
 
-import org.gradle.api.Project
-
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.Path
 import java.nio.charset.Charset
 
+import org.gradle.api.Project
+import org.gradle.api.GradleException
+
 private class PropsUtilExtension {
 
     public final static String NAME = 'propsUtil';
-
-    private final static logMsg = 'Loaded %d properties from %s file'
 
     protected Project project
 
@@ -30,16 +29,31 @@ private class PropsUtilExtension {
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
+        project.logger.info(sprintf('Loading %s property file.', configFile.toString()))
+
         // Acquiring a reader and load the .properties file.
         def reader = Files.newBufferedReader(configFile, Charset.forName("UTF-8"))
         def config = new Properties()
-        config.load(reader)
+
+        try {
+            config.load(reader)
+        }
+        catch (ex) {
+            project.logger.error('Unable to load property file.')
+            throw ex
+        }
 
         // Applying the config to the project.
-        def expander = new PropsUtilExpander(project)
-        expander.apply(config)
+        try {
+            def expander = new PropsUtilExpander(project)
+            expander.apply(config)
+        }
+        catch (ex) {
+            project.logger.error('Unable to apply property values to the project.')
+            throw ex
+        }
 
-        project.logger.info(sprintf(logMsg, config.size(), configFile.toString()))
+        project.logger.info(sprintf('Loaded %d properties from %s file', config.size(), configFile.toString()))
         project.logger.debug('Loaded properties: ' + config)
     }
 

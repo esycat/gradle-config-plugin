@@ -29,7 +29,7 @@ private class PropsUtilExpander {
 
     void apply(Properties properties) {
         def slurper = new ConfigSlurper()
-        slurper.setBinding(project.ext.properties)
+        //slurper.setBinding(project.ext.properties)
         def config = slurper.parse(properties)
 
         apply(config)
@@ -40,7 +40,16 @@ private class PropsUtilExpander {
         init.putAll(project.ext.properties)
 
         def target = config.clone()
-        target.merge(init)
+
+        try {
+            target.merge(init)
+        }
+        catch (ex) {
+            project.logger.error('Unable to merge config values.')
+            project.logger.debug('Config object: ' + config)
+            println config
+            System.exit(-1)
+        }
 
         merge(project, target)
     }
