@@ -12,25 +12,20 @@ private class PropsUtilExpander {
     private final static propName = 'config'
 
     private Project project
-    private ConfigObject config
 
     // def Character separator = '.'
 
     def PropsUtilExpander(final Project project) {
         this.project = project
 
-        if (project.ext.has(propName)) {
+        if (!project.ext.has(propName)) setConfig(new ConfigObject())
+        else {
             def config = project.ext.get(propName)
 
-            if (config instanceof ConfigObject) this.config = config
-            else {
-                def errMsg = 'The given project already has property %s of type %s, %s expected.'
-                project.logger.error(sprintf(errMsg, propName, project.config))
+            if (!config instanceof ConfigObject) {
+                def errMsg = 'The given project already has property %s of type %s, but %s expected.'
+                project.logger.error(sprintf(errMsg, propName, config.getClass(), ConfigObject.getSimpleName()))
             }
-        }
-        else {
-            this.config = new ConfigObject()
-            project.ext.set(propName, this.config)
         }
     }
 
@@ -45,28 +40,29 @@ private class PropsUtilExpander {
 
     void apply(Properties properties) {
         def slurper = new ConfigSlurper()
-        slurper.setBinding(this.config.toProperties())
+        slurper.setBinding(getConfig().toProperties())
         def config = slurper.parse(properties)
 
         apply(config)
     }
 
     void apply(ConfigObject config) {
-        def cfg = config.clone()
+        def localConfig = config.clone()
 
         try {
-            cfg.merge(this.config)
+            localConfig.merge(getConfig())
         }
         catch (ex) {
             project.logger.error('Unable to merge config values.')
-            project.logger.debug('Config object: ' + config)
+            project.logger.debug('Config object: ' + localConfig)
             throw ex
         }
 
-        project.ext.set(propName, cfg)
+        setConfig(localConfig)
     }
 
-    void applyTmp(ConfigObject config) {
+    /*
+    void apply(ConfigObject config) {
         def init = new ConfigObject()
         init.putAll(project.ext.properties)
 
@@ -83,7 +79,9 @@ private class PropsUtilExpander {
 
         merge(project, target)
     }
+    */
 
+    /*
     protected static void merge(Project project, ConfigObject config) {
         config.each { String key, val ->
             // if the project has a property of the same name,
@@ -93,6 +91,7 @@ private class PropsUtilExpander {
             project.ext.set(key, val)
         }
     }
+    */
 
     public static ConfigObject slurp(Path configFile, Map<String, Object> bindings) {
         def slurper = new ConfigSlurper()
@@ -127,5 +126,14 @@ private class PropsUtilExpander {
         dest
     }
     */
+
+    public ConfigObject getConfig() {
+        project.ext.get(propName)
+    }
+
+    private PropsUtilExpander setConfig(ConfigObject config) {
+        project.ext.set(propName, config)
+        this
+    }
 
 }
