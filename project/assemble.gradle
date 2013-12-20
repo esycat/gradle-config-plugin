@@ -1,5 +1,11 @@
+apply plugin: 'java'
+
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
+
+if (hasProperty('mainClassName') && !property('mainClassName')) {
+    mainClassName = [group, project.name, 'Main'].join('.')
+}
 
 ext.sharedManifest = manifest {
     attributes \
@@ -7,8 +13,10 @@ ext.sharedManifest = manifest {
         'Implementation-Version': project.version,
         'Built-JDK':  System.getProperty('java.version'),
         'Built-By':   System.getProperty('user.name'),
-        'Built-Date': new Date(),
-        'Main-Class': '' // project.mainClassName
+        'Built-Date': new Date()
+
+    if (hasProperty('mainClassName'))
+        attributes 'Main-Class': project.mainClassName
 }
 
 task sourceJar(type: Jar) {

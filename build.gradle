@@ -1,19 +1,23 @@
 description = 'Gradle plugin to expand dotted properties into nested maps.'
 group = 'com.esyfur'
-version = '0.4.1'
+version = '0.4.2'
 
 defaultTasks 'clean', 'build'
 
-apply plugin: 'groovy'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: project.ext.get('plugin.propsUtil.version')
+    }
+}
+
 apply plugin: 'idea'
+apply plugin: 'propsUtil'
 
 apply from: 'project/util.gradle'
 apply from: 'project/assemble.gradle'
 apply from: 'project/groovy.gradle'
-//apply from: 'project/publishing.gradle'
-apply from: 'project/publishing.old.gradle'
-
-dependencies {
-    compile localGroovy()
-    compile gradleApi()
-}
+apply from: 'project/plugin.gradle'
+apply from: 'project/publishing.gradle'
