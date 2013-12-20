@@ -9,13 +9,29 @@ import org.gradle.api.plugins.ExtraPropertiesExtension as PropExt
 
 private class PropsUtilExpander {
 
+    private final static propName = 'config'
+
     private Project project
+    private ConfigObject config
 
     // def Character separator = '.'
 
     def PropsUtilExpander(final Project project) {
         this.project = project
 
+        if (project.ext.has(propName)) {
+            def config = project.ext.get(propName)
+
+            if (config instanceof ConfigObject) this.config = config
+            else {
+                def errMsg = 'The given project already has property %s of type %s, %s expected.'
+                project.logger.error(sprintf(errMsg, propName, project.config))
+            }
+        }
+        else {
+            this.config = new ConfigObject()
+            project.ext.set(propName, this.config)
+        }
     }
 
     public static apply(final Project project) {
@@ -29,13 +45,28 @@ private class PropsUtilExpander {
 
     void apply(Properties properties) {
         def slurper = new ConfigSlurper()
-        //slurper.setBinding(project.ext.properties)
+        slurper.setBinding(this.config.toProperties())
         def config = slurper.parse(properties)
 
         apply(config)
     }
 
     void apply(ConfigObject config) {
+        def cfg = config.clone()
+
+        try {
+            cfg.merge(this.config)
+        }
+        catch (ex) {
+            project.logger.error('Unable to merge config values.')
+            project.logger.debug('Config object: ' + config)
+            throw ex
+        }
+
+        project.ext.set(propName, cfg)
+    }
+
+    void applyTmp(ConfigObject config) {
         def init = new ConfigObject()
         init.putAll(project.ext.properties)
 
