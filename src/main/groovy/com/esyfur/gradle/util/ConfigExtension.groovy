@@ -12,9 +12,9 @@ private class ConfigExtension {
 
     public final static String NAME = 'cfgutil';
 
-    protected Project project
+    private final Project project
 
-    void apply(final Project project) {
+    def ConfigExtension(final Project project) {
         this.project = project
     }
 
