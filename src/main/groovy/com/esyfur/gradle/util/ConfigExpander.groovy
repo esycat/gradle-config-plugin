@@ -14,8 +14,8 @@ private class ConfigExpander {
         this.project = project
 
         // Set config property name: either provided by the user or default
-        this.propName = project.ext.has(ConfigExtension.NAME + '.propName') ?
-                        project.ext.get(ConfigExtension.NAME + '.propName').toString().trim() : ConfigPlugin.NAME
+        this.propName = project.ext.has(ConfigPlugin.NAME + '.propName') ?
+                        project.ext.get(ConfigPlugin.NAME + '.propName').toString().trim() : ConfigPlugin.NAME
 
         project.logger.info(sprintf('Config property name: %s', propName))
 
@@ -31,8 +31,12 @@ private class ConfigExpander {
      * @return ConfigExpander
      */
     public static ConfigExpander apply(final Project project) {
+        // project's properties must be copied prior to the config object initialization
+        def properties = project.ext.properties
+
         def expander = new ConfigExpander(project)
-        expander.apply(project.ext.properties)
+        expander.apply(properties)
+
         expander
     }
 
