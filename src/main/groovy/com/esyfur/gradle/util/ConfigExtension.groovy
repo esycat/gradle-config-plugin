@@ -8,9 +8,9 @@ import java.nio.charset.Charset
 import org.gradle.api.Project
 import org.gradle.api.GradleException
 
-private class PropsUtilExtension {
+private class ConfigExtension {
 
-    public final static String NAME = 'propsUtil';
+    public final static String NAME = 'cfgutil';
 
     protected Project project
 
@@ -45,7 +45,7 @@ private class PropsUtilExtension {
 
         // Applying the config to the project.
         try {
-            def expander = new PropsUtilExpander(project)
+            def expander = new ConfigExpander(project)
             expander.apply(config)
         }
         catch (ex) {

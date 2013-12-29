@@ -7,7 +7,7 @@ import org.gradle.api.Project
 
 import org.gradle.api.plugins.ExtraPropertiesExtension as PropExt
 
-private class PropsUtilExpander {
+private class ConfigExpander {
 
     private final static propName = 'config'
 
@@ -15,7 +15,7 @@ private class PropsUtilExpander {
 
     // def Character separator = '.'
 
-    def PropsUtilExpander(final Project project) {
+    def ConfigExpander(final Project project) {
         this.project = project
 
         if (!project.ext.has(propName)) setConfig(new ConfigObject())
@@ -30,7 +30,7 @@ private class PropsUtilExpander {
     }
 
     public static apply(final Project project) {
-        def expander = new PropsUtilExpander(project)
+        def expander = new ConfigExpander(project)
         expander.apply(project.ext.properties)
     }
 
@@ -131,7 +131,7 @@ private class PropsUtilExpander {
         project.ext.get(propName)
     }
 
-    private PropsUtilExpander setConfig(ConfigObject config) {
+    private ConfigExpander setConfig(ConfigObject config) {
         project.ext.set(propName, config)
         this
     }
