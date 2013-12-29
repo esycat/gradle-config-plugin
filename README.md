@@ -1,6 +1,7 @@
-# Gradle Property Utilities Plugin
+# Gradle Config Plugin
+(aka Gradle Property Utilities Plugin)
 
-Gradle plugin to expand dotted properties into nested maps.
+Gradle plugin to expand dotted properties into nested objects.
 
 In Java applications it is a common practice to use property names in dotted notation, e.g. `aws.s3.bucket`.
 It also may be desirable to work with the values as nested structures.
@@ -12,7 +13,7 @@ This tiny plugin for Gradle aspires to do the trick.
 
 JDK 1.7 is required.
 
-The latest stable version is `0.3.2`.
+The latest stable version is `0.4.5`.
 
 
 ## Quick Start
@@ -23,11 +24,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: '0.3.2'
+        classpath group: 'com.esyfur', name: 'gradle-config-plugin', version: '0.4.+'
     }
 }
 
-apply plugin: 'propsUtil'
+apply plugin: 'config'
 ```
 
 
@@ -37,32 +38,41 @@ apply plugin: 'propsUtil'
 gradle test -Pbuild.name=myTestBuild -Pbuild.version=1.23
 ```
 
-`build.name` and `build.version` values will now be available in `build.gradle`
-as nested objects:
+`build.name` and `build.version` values will now be available in `build.gradle` as nested objects:
 
 ```groovy
 task test << {
-    println 'Build Name: '    + build.name
-    println 'Build Version: ' + build.version
+    println 'Build Name: '    + config.build.name
+    println 'Build Version: ' + config.build.version
 }
 ```
 
-It is also possible to leverage the safe navigation operator: `project.ext.aws.s3?.bucket`.
+It is also possible to leverage the safe navigation operator: `config.aws.s3?.bucket ?: 'com.esyfur'`.
+
+
+## Configuration
+
+To avoid name collisions, the plugin creates `config` property and uses it as the root scope for all processed values.
+
+It is possible to change the name of the property by defining `config.namespace` value in `gradle.properties`:
+```
+config.namespace = cfg
+```
 
 
 ## Loading .properties files
 
 Gradle automatically reads settings from `gradle.properties` files in project build and user home directories.
-But no concise way exists to load arbitrary properties files.
+But no concise ways provided to load arbitrary Properties files.
 
 This plugin adds a handy `load()` helper for that:
 ```groovy
-propsUtil.load('commons')
+cfgutil.load('commons')
 ```
 
-The method accepts either `java.nio.file.Path`, `java.io.File` or a `String`.
+The method accepts `java.nio.file.Path`, `java.io.File` or a `String`.
 If the given path isn't absolute, it is treated as relative to `projectDir`.
-If the file name does not have extension, `.properties` is assumed.
+If the file name does not have an extension, `.properties` is assumed.
 
 
 ## Acknowledgment
