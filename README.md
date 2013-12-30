@@ -42,12 +42,16 @@ gradle test -Pbuild.name=myTestBuild -Pbuild.version=1.23
 
 ```groovy
 task test << {
-    println 'Build Name: '    + config.build.name
+    println 'Build Name:    ' + config.build.name
     println 'Build Version: ' + config.build.version
 }
 ```
 
-It is also possible to leverage the safe navigation operator: `config.aws.s3?.bucket ?: 'com.esyfur'`.
+It is also possible to leverage the safe navigation operator:
+
+```groovy
+assert config.aws.s3?.bucket ?: 'com.esyfur.gradle' == 'com.esyfur.gradle'
+```
 
 
 ## Configuration
@@ -77,6 +81,9 @@ If the file name does not have an extension, `.properties` is assumed.
 
 ## Acknowledgment
 
-The implementation is trivial and was taken from
+The implementation is trivial and was initially borrowed from
 [@OverZealous](https://github.com/OverZealous)'s
-[answer on StackOverflow](http://stackoverflow.com/a/7261196/115132).
+[answer on StackOverflow](http://stackoverflow.com/a/7261196/115132),
+but in v0.3 it was replaced with
+[ConfigObject](http://groovy.codehaus.org/gapi/groovy/util/ConfigObject.html)
+and [ConfigSlurper](http://groovy.codehaus.org/gapi/groovy/util/ConfigSlurper.html).
