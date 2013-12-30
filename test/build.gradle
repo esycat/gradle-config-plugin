@@ -1,0 +1,31 @@
+defaultTasks 'test'
+
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath group: 'com.esyfur', name: 'gradle-config-plugin', version: project.ext.get('plugin.config.version')
+    }
+}
+
+apply plugin: 'config'
+
+task test {
+    ext.ns = project['config.namespace']
+
+    doLast {
+        assert project.ext.has(ns)
+        def cfg = project.ext.get(ns)
+        assert cfg instanceof ConfigObject
+
+        assert cfg.aws.s3.bucket == 'com.esyfur.gradle'
+        assert cfg.aws.s3.basket == new ConfigObject()
+        assert cfg.aws.s3?.basket ?: 'com.esyfur' == 'com.esyfur'
+
+        cfgutil.load('test')
+
+        assert cfg.aws.s3.bucket == 'com.esyfur.gradle'
+        assert cfg.aws.s3.busket == 'test'
+    }
+}
