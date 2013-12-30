@@ -9,16 +9,16 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'com.esyfur', name: 'gradle-expand-props', version: project.ext.get('plugin.config.version')
+        classpath group: 'com.esyfur', name: 'gradle-config-plugin', version: project.ext.get('plugin.config.version')
     }
 }
 
+apply plugin: 'config'
 apply plugin: 'signing'
-apply plugin: 'idea'
-apply plugin: 'propsUtil'
 
 apply from: 'project/util.gradle'
 apply from: 'project/assemble.gradle'
 apply from: 'project/groovy.gradle'
 apply from: 'project/plugin.gradle'
 apply from: 'project/publishing.gradle'
+apply from: 'project/ide.gradle'

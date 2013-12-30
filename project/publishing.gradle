@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.ajoberstar', name: 'gradle-git', version: project.ext.plugin.git.version
+        classpath group: 'org.ajoberstar', name: 'gradle-git', version: config.plugin.git.version
     }
 }
 
@@ -16,7 +16,7 @@ apply plugin: 'maven'
 artifacts {
     archives jar
     archives sourceJar
-    // archives scaladocJar
+    archives javadocJar
 }
 
 publishing {
@@ -24,8 +24,8 @@ publishing {
         main(MavenPublication) {
             from components.java
 
-            artifact source: sourceJar,   classifier: 'sources'
-            // artifact source: scaladocJar, classifier: 'javadoc'
+            artifact source: sourceJar,  classifier: 'sources'
+            artifact source: javadocJar, classifier: 'javadoc'
 
             pom.withXml {
                 asNode().children().last() + getPomConfiguration()
@@ -34,11 +34,13 @@ publishing {
     }
     repositories {
         mavenLocal()
-        maven {
-            url project.ext.sonatype.url
-            credentials {
-                username = System.properties['sonatype.username']
-                password = System.properties['sonatype.password']
+        if (config.containsKey('sonatype')) {
+            maven {
+                url config.sonatype.url
+                credentials {
+                    username = System.properties['sonatype.username']
+                    password = System.properties['sonatype.password']
+                }
             }
         }
     }
@@ -75,26 +77,26 @@ tasks.publish.mustRunAfter tagVersion
  * Create POM config and return for use by other tasks.
  */
 def getPomConfiguration() {
-    def scmcfg = project.ext.github
-    def repo = sprintf('%s/%s', scmcfg.username, scmcfg.repo.name)
+    def scmCfg = config.scm
+    def repo = sprintf('%s/%s', scmCfg.username, scmCfg.repo.name)
 
     return {
         name project.name
         description project.description
-        url sprintf(scmcfg.repo.url, repo)
+        url sprintf(scmCfg.repo.url, repo)
         inceptionYear '2013'
         packaging 'jar'
         licenses {
             license {
-                name project.ext.license.name
-                url project.ext.license.url
+                name config.license.name
+                url config.license.url
                 distribution 'repo'
             }
         }
         scm {
-            url sprintf(scmcfg.repo.url, repo)
-            connection 'scm:git:' + sprintf(scmcfg.remote.url.fetch, repo)
-            developerConnection 'scm:git:' + sprintf(scmcfg.remote.url.push, repo)
+            url sprintf(scmCfg.repo.url, repo)
+            connection 'scm:git:' + sprintf(scmCfg.remote.url.fetch, repo)
+            developerConnection 'scm:git:' + sprintf(scmCfg.remote.url.push, repo)
         }
         developers {
             developer {
@@ -110,13 +112,14 @@ def getPomConfiguration() {
 }
 
 uploadArchives {
-    mustRunAfter tagVersion
     repositories.mavenDeployer {
-        repository(url: project.ext.sonatype.url) {
-            authentication(
-                userName: System.properties['sonatype.username'],
-                password: System.properties['sonatype.password']
-            )
+        if (config.containsKey('sonatype')) {
+            repository(url: config.sonatype.url) {
+                authentication(
+                    userName: System.properties['sonatype.username'],
+                    password: System.properties['sonatype.password']
+                )
+            }
         }
         pom.project getPomConfiguration()
         beforeDeployment { signing.signPom it }
