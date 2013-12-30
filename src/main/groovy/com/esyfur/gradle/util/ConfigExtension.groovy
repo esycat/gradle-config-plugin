@@ -19,16 +19,16 @@ private class ConfigExtension {
 
     def load(Path configFile) {
         if (!configFile.isAbsolute()) {
-            project.logger.debug("The given path isn't absolute, assume it's relative to the project's root dir.")
+            project.logger.debug("Given path isn't absolute, assume it's relative to the project's root dir.")
             configFile = project.projectDir.toPath().resolve(configFile)
         }
 
         if (!configFile.getFileName().toString().contains('.')) {
-            project.logger.debug("The given file name doesn't have extension, assume it should be .properties.")
+            project.logger.debug("Given file name doesn't have extension, assume it should be .properties.")
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
-        project.logger.info(sprintf('Loading %s property file.', configFile.toString()))
+        project.logger.info('Loading %s property file.', configFile)
 
         // Acquiring a reader and load the .properties file.
         def reader = Files.newBufferedReader(configFile, Charset.forName("UTF-8"))
@@ -52,8 +52,8 @@ private class ConfigExtension {
             throw ex
         }
 
-        project.logger.info(sprintf('Loaded %d properties from %s file', config.size(), configFile.toString()))
-        project.logger.debug('Loaded properties: ' + config)
+        project.logger.info('Loaded %d properties from %s file', config.size(), configFile)
+        project.logger.debug('Loaded properties: %s', config)
     }
 
     def load(final File configFile) {
