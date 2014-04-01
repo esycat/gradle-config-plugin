@@ -50,7 +50,7 @@ private class ConfigExpander {
         }
         catch (ex) {
             project.logger.error('Unable to merge config values.')
-            project.logger.debug('Config object: %s', config)
+            project.logger.debug('Config object: {}', config)
             throw ex
         }
     }
@@ -62,7 +62,7 @@ private class ConfigExpander {
 
     private ConfigObject initConfig() {
         def namespace = getNamespace()
-        project.logger.info('Config property name: %s', namespace)
+        project.logger.info('Config property name: {}', namespace)
 
         if (project.ext.has(namespace)) {
             def config = project.ext.get(namespace)
@@ -72,10 +72,10 @@ private class ConfigExpander {
                 config
             }
             else {
-                def errMsg = 'Given project has property %s of type %s, but %s expected.'
+                def errMsg = 'Given project has property {} of type {}, but {} expected.'
 
                 project.logger.info(errMsg, namespace, config.getClass(), ConfigObject.getSimpleName())
-                project.logger.debug('Config object: %s', config)
+                project.logger.debug('Config object: {}', config)
 
                 throw new GradleException(sprintf(errMsg, namespace, config.getClass(), ConfigObject.getSimpleName()))
             }

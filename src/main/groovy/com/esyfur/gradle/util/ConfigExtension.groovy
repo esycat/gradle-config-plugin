@@ -28,7 +28,7 @@ private class ConfigExtension {
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
-        project.logger.info('Loading %s property file.', configFile)
+        project.logger.info('Loading {} property file.', configFile)
 
         // Acquiring a reader and load the .properties file.
         def reader = Files.newBufferedReader(configFile, Charset.forName("UTF-8"))
@@ -52,8 +52,8 @@ private class ConfigExtension {
             throw ex
         }
 
-        project.logger.info('Loaded %d properties from %s file', config.size(), configFile)
-        project.logger.debug('Loaded properties: %s', config)
+        project.logger.info('Loaded {} properties from {} file', config.size(), configFile)
+        project.logger.debug('Loaded properties: {}', config)
     }
 
     def load(final File configFile) {
