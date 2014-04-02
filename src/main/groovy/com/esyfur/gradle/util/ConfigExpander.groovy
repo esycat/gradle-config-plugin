@@ -36,6 +36,8 @@ private class ConfigExpander {
     }
 
     void apply(Properties properties) {
+        process(properties)
+
         def slurper = new ConfigSlurper()
         slurper.setBinding(this.config.toProperties())
         def config = slurper.parse(properties)
@@ -53,6 +55,25 @@ private class ConfigExpander {
             project.logger.debug('Config object: {}', config)
             throw ex
         }
+    }
+
+    private Properties process(Properties properties) {
+        def isProcessValuesEnabled = isProcessValuesEnabled()
+
+        if (isProcessValuesEnabled) {
+            properties.each {
+                it.value = processValue(it.value)
+            }
+        }
+    }
+
+    private String processValue(String value) {
+        value.trim()
+    }
+
+    private Boolean isProcessValuesEnabled() {
+        def propName = ConfigPlugin.getPropName('processValues')
+        project.ext.has(propName) ? project.ext.get(propName).toBoolean() : true;
     }
 
     private String getNamespace() {

@@ -7,7 +7,7 @@ import java.nio.charset.Charset
 
 import org.gradle.api.Project
 
-private class ConfigExtension {
+class ConfigExtension {
 
     public final static String NAME = 'cfgutil';
 
