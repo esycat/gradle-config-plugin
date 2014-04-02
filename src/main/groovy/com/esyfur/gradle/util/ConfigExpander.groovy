@@ -5,7 +5,12 @@ import java.nio.file.Path
 import org.gradle.api.Project
 import org.gradle.api.GradleException
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 private class ConfigExpander {
+
+    private final Logger logger = LoggerFactory.getLogger(ConfigExpander.class)
 
     private final ConfigObject config
     private final Project project
@@ -51,8 +56,8 @@ private class ConfigExpander {
             this.config.putAll(properties)
         }
         catch (ex) {
-            project.logger.error('Unable to merge config values.')
-            project.logger.debug('Config object: {}', config)
+            logger.error('Unable to merge config values.')
+            logger.debug('Config object: {}', config)
             throw ex
         }
     }
@@ -61,6 +66,7 @@ private class ConfigExpander {
         def isProcessValuesEnabled = isProcessValuesEnabled()
 
         if (isProcessValuesEnabled) {
+            logger.debug('Value processing is enabled.')
             properties.each {
                 it.value = processValue(it.value)
             }
@@ -83,26 +89,27 @@ private class ConfigExpander {
 
     private ConfigObject initConfig() {
         def namespace = getNamespace()
-        project.logger.info('Config property name: {}', namespace)
+        logger.info('Config property namespace: {}', namespace)
 
         if (project.ext.has(namespace)) {
             def config = project.ext.get(namespace)
 
             if (config instanceof ConfigObject) {
-                project.logger.info('Given project already has initialized ConfigObject.')
+                logger.warn('Given project already has initialized ConfigObject.')
                 config
             }
             else {
                 def errMsg = 'Given project has property {} of type {}, but {} expected.'
+                errMsg = sprintf(errMsg, namespace, config.getClass(), ConfigObject.getSimpleName())
 
-                project.logger.info(errMsg, namespace, config.getClass(), ConfigObject.getSimpleName())
-                project.logger.debug('Config object: {}', config)
+                logger.error(errMsg)
+                logger.debug('Config object: {}', config)
 
-                throw new GradleException(sprintf(errMsg, namespace, config.getClass(), ConfigObject.getSimpleName()))
+                throw new GradleException(errMsg)
             }
         }
         else {
-            project.logger.info('Initializing new ConfigObject for the project…')
+            logger.info('Initializing new ConfigObject for the project…')
 
             def config = new ConfigObject()
             project.ext.set(namespace, config)

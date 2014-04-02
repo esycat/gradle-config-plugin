@@ -7,9 +7,14 @@ import java.nio.charset.Charset
 
 import org.gradle.api.Project
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 class ConfigExtension {
 
     public final static String NAME = 'cfgutil';
+
+    private final Logger logger = LoggerFactory.getLogger(ConfigExtension.class)
 
     private final Project project
 
@@ -19,16 +24,16 @@ class ConfigExtension {
 
     def load(Path configFile) {
         if (!configFile.isAbsolute()) {
-            project.logger.debug("Given path isn't absolute, assume it's relative to the project's root dir.")
+            logger.debug("Given path isn't absolute, assume it's relative to the project's root dir.")
             configFile = project.projectDir.toPath().resolve(configFile)
         }
 
         if (!configFile.getFileName().toString().contains('.')) {
-            project.logger.debug("Given file name doesn't have extension, assume it should be .properties.")
+            logger.debug("Given file name doesn't have extension, assume it should be .properties.")
             configFile = Paths.get(configFile.toString() + '.properties')
         }
 
-        project.logger.info('Loading {} property file.', configFile)
+        logger.info('Loading {} property file.', configFile)
 
         // Acquiring a reader and load the .properties file.
         def reader = Files.newBufferedReader(configFile, Charset.forName("UTF-8"))
@@ -38,7 +43,7 @@ class ConfigExtension {
             config.load(reader)
         }
         catch (ex) {
-            project.logger.error('Unable to load property file.')
+            logger.error('Unable to load property file.')
             throw ex
         }
 
@@ -48,12 +53,12 @@ class ConfigExtension {
             expander.apply(config)
         }
         catch (ex) {
-            project.logger.error('Unable to apply property values to the project.')
+            logger.error('Unable to apply property values to the project.')
             throw ex
         }
 
-        project.logger.info('Loaded {} properties from {} file', config.size(), configFile)
-        project.logger.debug('Loaded properties: {}', config)
+        logger.info('Loaded {} properties from {} file', config.size(), configFile)
+        logger.debug('Loaded properties: {}', config)
     }
 
     def load(final File configFile) {
