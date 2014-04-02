@@ -117,10 +117,4 @@ private class ConfigExpander {
         }
     }
 
-    public static ConfigObject load(Path configFile, Map<String, Object> bindings) {
-        def slurper = new ConfigSlurper()
-        slurper.setBinding(bindings)
-        slurper.parse(configFile.toUri().toURL())
-    }
-
 }
