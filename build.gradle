@@ -1,11 +1,12 @@
 description = 'Gradle plugin to expand dotted properties into nested maps.'
 group = 'com.esyfur'
-version = '0.4.5'
+version = '0.4.6'
 
 defaultTasks 'clean', 'build'
 
 buildscript {
     repositories {
+        mavenLocal() // for testing only
         mavenCentral()
     }
     dependencies {

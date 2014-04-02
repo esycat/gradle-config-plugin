@@ -1,0 +1,14 @@
+dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-api', version: config.slf4j.version
+//    compile group: 'org.slf4j', name: 'slf4j-nop', version: config.slf4j.version // required for BoneCP
+
+//    compile group: 'ch.qos.logback', name: 'logback-classic', version: config.logback.version
+//    compile group: 'ch.qos.logback', name: 'logback-core',    version: config.logback.version
+//
+//    compile group: 'org.apache.logging.log4j', name: 'log4j-api',        version: config.apache.log4j.version
+//    compile group: 'org.apache.logging.log4j', name: 'log4j-core',       version: config.apache.log4j.version
+//    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: config.apache.log4j.version
+//
+//    compile group: 'com.typesafe', name: sclArt('scalalogging-log4j'), version: config.typesafe.logging.version
+//    compile group: 'com.typesafe', name: sclArt('scalalogging-slf4j'), version: config.typesafe.logging.version
+}
