@@ -14,4 +14,8 @@ class ConfigPlugin implements Plugin<Project> {
         ConfigExpander.apply(project)
     }
 
+    static String getPropName(String name) {
+        ConfigPlugin.NAME + '.' + name
+    }
+
 }

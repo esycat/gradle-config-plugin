@@ -56,7 +56,7 @@ private class ConfigExpander {
     }
 
     private String getNamespace() {
-        def propName = ConfigPlugin.NAME + '.namespace'
+        def propName = ConfigPlugin.getPropName('namespace')
         project.ext.has(propName) ? project.ext.get(propName).toString().trim() : ConfigPlugin.NAME
     }
 
