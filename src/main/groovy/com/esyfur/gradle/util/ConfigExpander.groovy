@@ -77,6 +77,10 @@ private class ConfigExpander {
         value.trim()
     }
 
+    private processValue(value) {
+        value
+    }
+
     private Boolean isProcessValuesEnabled() {
         def propName = ConfigPlugin.getPropName('processValues')
         project.ext.has(propName) ? project.ext.get(propName).toBoolean() : true;

@@ -41,8 +41,8 @@ publishing {
             maven {
                 url repoUrl
                 credentials {
-                    username repoAuth.username
-                    password repoAuth.password
+                    username = repoAuth.username
+                    password = repoAuth.password
                 }
             }
         }
